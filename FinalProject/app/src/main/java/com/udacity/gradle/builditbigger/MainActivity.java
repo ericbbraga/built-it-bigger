@@ -1,11 +1,11 @@
 package com.udacity.gradle.builditbigger;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.udacity.gradle.builditbigger.jokelib.JokeTeller;
 
@@ -16,6 +16,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        View view = findViewById(R.id.tell_joke_widget);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tellJoke();
+            }
+        });
     }
 
 
@@ -41,11 +49,14 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void tellJoke(View view) {
+    public void tellJoke() {
         JokeTeller jokeTeller = new JokeTeller();
         String joke = jokeTeller.tellMeAJoke();
 
-        Toast.makeText(this, joke, Toast.LENGTH_LONG).show();
+        Intent it = new Intent("com.ericbraga.display.JOKE_DISPLAY");
+        it.putExtra("com.ericbraga.display.JOKE_EXTRA", joke);
+
+        startActivity(it);
     }
 
 

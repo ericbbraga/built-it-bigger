@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ericbraga.displayjokemodule" >
+
+    <application>
+        <activity android:name=".DisplayJoke">
+            <intent-filter>
+                <action android:name="com.ericbraga.display.JOKE_DISPLAY"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
