@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">display.joke.module</string>
+    <string name="no_jokes">No Jokes for you</string>
+</resources>
