@@ -31,23 +31,42 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "default"
+
+    productFlavors {
+        free {
+            dimension "default"
+            applicationIdSuffix ".free"
+        }
+
+        paid {
+            dimension "default"
+        }
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.google.android.gms:play-services-ads:11.8.0'
     implementation 'com.google.api-client:google-api-client:1.23.0'
     implementation 'com.google.http-client:google-http-client-android:1.23.0'
     implementation 'com.google.code.findbugs:jsr305:3.0.1'
-    implementation project(":jokelib")
-    implementation project(":display.joke.module")
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'com.android.support.test.espresso:espresso-idling-resource:3.0.2'
+
+    implementation project(':jokelib')
+    implementation project(':display.joke')
+    freeImplementation 'com.google.android.gms:play-services-ads:11.8.0'
+
     endpointsServer project(path: ':backend', configuration: 'endpoints')
-
-
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
     testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.2'
 }

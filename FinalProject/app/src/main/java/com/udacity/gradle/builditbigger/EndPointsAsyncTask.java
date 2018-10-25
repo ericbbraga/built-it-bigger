@@ -1,10 +1,10 @@
 package com.udacity.gradle.builditbigger;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.util.Log;
-import android.util.Pair;
-import android.widget.Toast;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -15,15 +15,33 @@ import com.udacity.gradle.builditbigger.backend.myApi.MyApi;
 import java.io.IOException;
 
 public class EndPointsAsyncTask extends AsyncTask<Void, Void, String> {
+    private static final String TAG = "EndPointsAsyncTask";
     private static MyApi myApiService = null;
     private Context mContext;
+    private CountingIdlingResource mIdlingResource;
+    private EndPointsCallback mCallback;
 
-    public EndPointsAsyncTask(Context context) {
-        mContext = context;
+    public interface EndPointsCallback {
+        void onResultLoaded(String result);
     }
+
+
+    EndPointsAsyncTask(Context context, EndPointsCallback callback) {
+        mContext = context;
+        mCallback = callback;
+        mIdlingResource = new CountingIdlingResource("Sync");
+    }
+
 
     @Override
     protected String doInBackground(Void... params) {
+
+        try {
+            Thread.sleep(5 * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         if(myApiService == null) {  // Only do this once
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                 new AndroidJsonFactory(), null)
@@ -43,6 +61,8 @@ public class EndPointsAsyncTask extends AsyncTask<Void, Void, String> {
         }
 
         try {
+            mIdlingResource.increment();
+
             return myApiService.tellMeSomeJoke().execute().getData();
         } catch (IOException e) {
             return e.getMessage();
@@ -51,7 +71,8 @@ public class EndPointsAsyncTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
-        Log.i("EndPoints", "onPostExecute: " + result);
+        Log.i(TAG, "onPostExecute: " + result);
+        mCallback.onResultLoaded(result);
+        mIdlingResource.decrement();
     }
 }

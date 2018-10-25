@@ -10,7 +10,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/backend" />
-            <option value="$PROJECT_DIR$/display.joke.module" />
+            <option value="$PROJECT_DIR$/display.joke" />
             <option value="$PROJECT_DIR$/jokelib" />
           </set>
         </option>
