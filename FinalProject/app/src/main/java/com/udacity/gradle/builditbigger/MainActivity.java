@@ -1,18 +1,14 @@
 package com.udacity.gradle.builditbigger;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.udacity.gradle.builditbigger.jokelib.JokeTeller;
-
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements EndPointsAsyncTask.EndPointsCallback {
+    private View mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,11 +19,29 @@ public class MainActivity extends AppCompatActivity {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tellJoke();
+                onClickJoke();
             }
         });
+        mProgress = findViewById(R.id.loading);
+
     }
 
+    private void onClickJoke() {
+        showProgress();
+
+        EndPointsAsyncTask endPointsAsyncTask = new EndPointsAsyncTask(this, this);
+        endPointsAsyncTask.execute();
+
+        hideProgress();
+    }
+
+    private void showProgress() {
+        mProgress.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgress() {
+        mProgress.setVisibility(View.INVISIBLE);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -51,9 +65,18 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void tellJoke() {
-        EndPointsAsyncTask endPointsAsyncTask = new EndPointsAsyncTask(this);
-        endPointsAsyncTask.execute();
-    }
+    @Override
+    public void onResultLoaded(String result) {
+        Intent it = new Intent();
+        if (getResources().getBoolean(R.bool.show_google_ad)) {
+            it.setAction("com.udacity.gradle.builditbigger.DISPLAY_AD");
 
+        } else {
+            it.setAction("com.ericbraga.display.JOKE_DISPLAY");
+        }
+
+        it.putExtra("com.ericbraga.display.JOKE_EXTRA", result);
+
+        startActivity(it);
+    }
 }
